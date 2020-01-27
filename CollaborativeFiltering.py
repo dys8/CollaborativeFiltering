@@ -31,6 +31,7 @@ trX = norm_user_rating_df.values
 
 hiddenUnits = 15
 visibleUnits =  len(user_rating_df.columns)
+
 vb = tf.placeholder("float", [visibleUnits]) #Number of unique movies
 hb = tf.placeholder("float", [hiddenUnits]) #Number of features to learn
 W = tf.placeholder("float", [visibleUnits, hiddenUnits])
@@ -40,6 +41,7 @@ W = tf.placeholder("float", [visibleUnits, hiddenUnits])
 v0 = tf.placeholder("float", [None, visibleUnits])
 _h0 = tf.nn.sigmoid(tf.matmul(v0, W) + hb)
 h0 = tf.nn.relu(tf.sign(_h0 - tf.random_uniform(tf.shape(_h0))))
+
 #Phase 2: Reconstruction
 _v1 = tf.nn.sigmoid(tf.matmul(h0, tf.transpose(W)) + vb) 
 v1 = tf.nn.relu(tf.sign(_v1 - tf.random_uniform(tf.shape(_v1))))
