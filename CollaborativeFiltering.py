@@ -24,7 +24,7 @@ ratings_df.columns = ['UserID', 'MovieID', 'Rating', 'Timestamp']
 
 
 user_rating_df = ratings_df.pivot(index='UserID', columns='MovieID', values='Rating')
-norm_user_rating_df = user_rating_df.fillna(0) / 5.0
+norm_user_rating_df = user_rating_df.fillna(0) / 5.0 #normalizing user ratings
 
 trX = norm_user_rating_df.values
 
@@ -32,17 +32,17 @@ trX = norm_user_rating_df.values
 hiddenUnits = 15
 visibleUnits =  len(user_rating_df.columns)
 
-vb = tf.placeholder("float", [visibleUnits]) #Number of unique movies
-hb = tf.placeholder("float", [hiddenUnits]) #Number of features to learn
+vb = tf.placeholder("float", [visibleUnits]) #number of movies
+hb = tf.placeholder("float", [hiddenUnits]) #number of latent features 
 W = tf.placeholder("float", [visibleUnits, hiddenUnits])
 
 
-#Phase 1: Input Processing
+#Processing the input
 v0 = tf.placeholder("float", [None, visibleUnits])
 _h0 = tf.nn.sigmoid(tf.matmul(v0, W) + hb)
 h0 = tf.nn.relu(tf.sign(_h0 - tf.random_uniform(tf.shape(_h0))))
 
-#Phase 2: Reconstruction
+#Reconstruction of input
 _v1 = tf.nn.sigmoid(tf.matmul(h0, tf.transpose(W)) + vb) 
 v1 = tf.nn.relu(tf.sign(_v1 - tf.random_uniform(tf.shape(_v1))))
 h1 = tf.nn.sigmoid(tf.matmul(v1, W) + hb)
@@ -65,13 +65,13 @@ update_hb = hb + alpha * tf.reduce_mean(h0 - h1, 0)
 err = v0 - v1
 err_sum = tf.reduce_mean(err * err)
 
-#current weight
+#current weights
 w_c = np.zeros([visibleUnits, hiddenUnits], np.float32)
 #current visible unit biases
 vb_c = np.zeros([visibleUnits], np.float32)
 #current hidden unit biases
 hb_c = np.zeros([hiddenUnits], np.float32)
-#previous weight
+#previous weights
 w_p = np.zeros([visibleUnits, hiddenUnits], np.float32)
 #previous visible unit biases
 vb_p = np.zeros([visibleUnits], np.float32)
@@ -80,8 +80,8 @@ hb_p = np.zeros([hiddenUnits], np.float32)
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
-epochs = 15
-batchsize = 100
+epochs = 25
+batchsize = 60
 errors = []
 for i in range(epochs):
     for start, end in zip( range(0, len(trX), batchsize), range(batchsize, len(trX), batchsize)):
