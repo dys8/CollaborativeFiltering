@@ -39,12 +39,12 @@ W = tf.placeholder("float", [visibleUnits, hiddenUnits])
 
 #Processing the input
 v0 = tf.placeholder("float", [None, visibleUnits])
-_h0 = tf.nn.sigmoid(tf.matmul(v0, W) + hb)
-h0 = tf.nn.relu(tf.sign(_h0 - tf.random_uniform(tf.shape(_h0))))
+h_0 = tf.nn.sigmoid(tf.matmul(v0, W) + hb)
+h0 = tf.nn.relu(tf.sign(h_0 - tf.random_uniform(tf.shape(h_0))))
 
 #Reconstruction of input
-_v1 = tf.nn.sigmoid(tf.matmul(h0, tf.transpose(W)) + vb) 
-v1 = tf.nn.relu(tf.sign(_v1 - tf.random_uniform(tf.shape(_v1))))
+v_1 = tf.nn.sigmoid(tf.matmul(h0, tf.transpose(W)) + vb) 
+v1 = tf.nn.relu(tf.sign(v_1 - tf.random_uniform(tf.shape(v_1))))
 h1 = tf.nn.sigmoid(tf.matmul(v1, W) + hb)
 
 alpha = 1.0 #learning rate
