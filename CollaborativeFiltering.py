@@ -57,9 +57,9 @@ w_neg_grad = tf.matmul(tf.transpose(v1), h1)
 CD = (w_pos_grad - w_neg_grad) / tf.to_float(tf.shape(v0)[0])
 
 #Creating update operations for the weights and biases
-update_w = W + alpha * CD
-update_vb = vb + alpha * tf.reduce_mean(v0 - v1, 0)
-update_hb = hb + alpha * tf.reduce_mean(h0 - h1, 0)
+w_updated = W + alpha * CD
+vb_updated = vb + alpha * tf.reduce_mean(v0 - v1, 0)
+hb_updated = hb + alpha * tf.reduce_mean(h0 - h1, 0)
 
 #error
 err = v0 - v1
@@ -86,9 +86,9 @@ errors = []
 for i in range(epochs):
     for start, end in zip( range(0, len(trX), batchsize), range(batchsize, len(trX), batchsize)):
         batch = trX[start:end]
-        w_c = sess.run(update_w, feed_dict={v0: batch, W: w_p, vb: vb_p, hb: hb_p})
-        vb_c = sess.run(update_vb, feed_dict={v0: batch, W: w_p, vb: vb_p, hb: hb_p})
-        nb_c = sess.run(update_hb, feed_dict={v0: batch, W: w_p, vb: vb_p, hb: hb_p})
+        w_c = sess.run(w_updated, feed_dict={v0: batch, W: w_p, vb: vb_p, hb: hb_p})
+        vb_c = sess.run(vb_updated, feed_dict={v0: batch, W: w_p, vb: vb_p, hb: hb_p})
+        nb_c = sess.run(hb_updated, feed_dict={v0: batch, W: w_p, vb: vb_p, hb: hb_p})
         w_p = w_c
         vb_p = vb_c
         hb_p = hb_c
